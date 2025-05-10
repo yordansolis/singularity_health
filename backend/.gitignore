@@ -1,3 +1,8 @@
 venv/
 .venv/
 note.md
+
+git add -f deploy.sh
+git add -f DEPLOY.md
+git add -f gunicorn_config.py
+git add -f nginx_config

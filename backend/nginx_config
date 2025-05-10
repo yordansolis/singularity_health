@@ -1,0 +1,15 @@
+server {
+    listen 80;
+    server_name _;  # Reemplazar con tu dominio o IP
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    location /static/ {
+        root /home/yordansolis2/singularity_health/backend;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://localhost:8000;
+    }
+} 
