@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name _;  # Reemplazar con tu dominio o IP
+    server_name 34.29.108.79;  # Reemplazar con tu dominio o IP
 
     location = /favicon.ico { access_log off; log_not_found off; }
 
