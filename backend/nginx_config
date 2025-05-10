@@ -1,11 +1,31 @@
 server {
     listen 80;
     server_name 34.29.108.79;  # Ya está configurado con tu IP
+    client_max_body_size 100M;  # Permitir subidas de archivos grandes
 
     location = /favicon.ico { access_log off; log_not_found off; }
 
+    # Servir archivos estáticos directamente
     location /static/ {
-        root /home/yordansolis2/singularity_health/backend;
+        alias /home/yordansolis2/singularity_health/backend/staticfiles/;
+        access_log off;
+        expires 30d;
+        add_header Cache-Control "public, max-age=2592000";
+        include /home/yordansolis2/singularity_health/backend/nginx_cors_config;
+        
+        # Configuración adicional para archivos estáticos
+        gzip on;
+        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    }
+
+    # Configuración para el panel de administración
+    location /admin/ {
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://localhost:8000;
+        include /home/yordansolis2/singularity_health/backend/nginx_cors_config;
     }
 
     location / {
@@ -14,5 +34,6 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_pass http://localhost:8000;
+        include /home/yordansolis2/singularity_health/backend/nginx_cors_config;
     }
 } 

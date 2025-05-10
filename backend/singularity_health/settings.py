@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-s#x+$tcq(e^n19c!&k%r*+x87uw=qx_21xonb3&=0p7-#(g!9j')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+DEBUG = True
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
@@ -64,9 +64,14 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5500",  # El origen exacto de tu frontend
     "http://localhost:5500",  # Alternativa si usas localhost
+    "http://34.29.108.79",    # IP de tu servidor
+    "https://34.29.108.79",   # IP con HTTPS
     # Añade otros orígenes si es necesario
 ]
 CORS_ALLOW_ALL_ORIGINS = True  # Solo para desarrollo, en producción especificar orígenes
+
+# Configuración adicional para CORS
+CORS_ALLOW_CREDENTIALS = True
 
 # 5. Especificar qué headers permitir
 CORS_ALLOW_HEADERS = [
@@ -168,8 +173,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Directorios adicionales donde buscar archivos estáticos
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+# Configuración para servir archivos estáticos en producción
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
