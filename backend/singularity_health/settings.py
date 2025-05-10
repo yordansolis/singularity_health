@@ -54,14 +54,46 @@ MIDDLEWARE = [
 ]
 
 
-# inicial ######## 
+# inicial ######## #######
+
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5500",  # El origen exacto de tu frontend
+    "http://localhost:5500",  # Alternativa si usas localhost
+    # Añade otros orígenes si es necesario
+]
 CORS_ALLOW_ALL_ORIGINS = True  # Solo para desarrollo, en producción especificar orígenes
+
+# 5. Especificar qué headers permitir
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+# 6. Permitir métodos HTTP
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
 GRAPHENE = {
     'SCHEMA': 'singularity_health.schema.schema'
 }
 
+
 AUTH_USER_MODEL = 'users.User'
-#  documentación final  ########
+
+
+#  documentación final  ######## ##########
 
 
 

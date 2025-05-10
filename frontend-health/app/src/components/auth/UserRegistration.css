@@ -1,0 +1,610 @@
+/* UserRegistration Styles */
+:root {
+  --primary-color: #000000;
+  --primary-hover: #333333;
+  --danger-color: #dc2626;
+  --success-color: #10b981;
+  --border-color: #e2e8f0;
+  --text-light-mode: #334155;
+  --input-text-color: #000000;
+  --bg-form-light: #ffffff;
+  --input-bg-color: #ffffff;
+  --placeholder-opacity: 0.45; /* New variable for placeholder opacity */
+}
+
+/* Prevenir el autocompletado automático del navegador */
+@keyframes autofill-black {
+  to {
+    color: #000000;
+    background: #ffffff;
+  }
+}
+
+@-webkit-keyframes autofill-black {
+  to {
+    color: #000000;
+    background: #ffffff;
+  }
+}
+
+input:-webkit-autofill {
+  animation-name: autofill-black;
+  animation-fill-mode: both;
+  -webkit-animation-name: autofill-black;
+  -webkit-animation-fill-mode: both;
+  -webkit-text-fill-color: #000000 !important;
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+}
+
+/* Fix para autocompletado en modo oscuro */
+@media (prefers-color-scheme: dark) {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #000000 !important;
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+    caret-color: #000000;
+  }
+  
+  /* Fix para placeholders en modo oscuro */
+  ::placeholder {
+    color: rgba(0, 0, 0, 0.6) !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Selector de alta especificidad para forzar color negro */
+html body form.needs-validation input.form-control,
+html body form.needs-validation select.form-select,
+html body form.needs-validation input.form-control:focus,
+html body form.needs-validation select.form-select:focus,
+html body form.needs-validation input.form-control[type="text"],
+html body form.needs-validation input.form-control[type="email"],
+html body form.needs-validation input.form-control[type="password"],
+html body form.needs-validation input.form-control[type="date"],
+html body form.needs-validation input.form-control[type="tel"] {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  -webkit-text-fill-color: #000000 !important;
+  font-weight: 500 !important;
+}
+
+/* React-toastify estilos personalizados */
+.Toastify__toast-container {
+  position: fixed !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+
+/* Cambiar posición de top-center a bottom-center */
+.Toastify__toast-container--top-center {
+  top: auto !important; /* Quitar top */
+  bottom: 2em !important; /* Colocar en la parte inferior */
+  width: auto !important;
+  max-width: 700px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+/* También agregar soporte para bottom-center explícitamente */
+.Toastify__toast-container--bottom-center {
+  bottom: 2em !important;
+  width: auto !important;
+  max-width: 700px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+/* Garantizar que las notificaciones permanezcan visibles */
+.Toastify__toast {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif !important;
+  padding: 18px !important;
+  font-size: 1.05rem !important;
+  margin-bottom: 1rem !important;
+  min-height: 80px !important;
+  display: flex !important;
+  align-items: center !important;
+  position: relative !important;
+  overflow: visible !important;
+  transition: transform 0.2s ease-out !important;
+}
+
+/* Garantizar buen "stacking" de notificaciones múltiples */
+.Toastify__toast-container > div {
+  position: relative;
+  pointer-events: auto !important;
+}
+
+/* Mejorar contraste visual para errores y éxitos */
+.Toastify__toast-theme--light.Toastify__toast--success {
+  background-color: #f0fdf4 !important;
+  border-left: 5px solid #10b981 !important;
+  color: #065f46 !important;
+}
+
+.Toastify__toast-theme--light.Toastify__toast--error {
+  background-color: #fef2f2 !important;
+  border-left: 5px solid #dc2626 !important;
+  color: #991b1b !important;
+}
+
+/* Que el botón de cerrar sea perfectamente clickeable */
+.Toastify__close-button {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  opacity: 0.7 !important;
+  padding: 4px !important;
+  color: #333 !important;
+  cursor: pointer !important;
+  background: transparent !important;
+  border: none !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10 !important;
+}
+
+.Toastify__close-button:hover {
+  opacity: 1 !important;
+}
+
+.Toastify__close-button > svg {
+  fill: currentColor !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Asegurar que la barra de progreso funcione correctamente */
+.Toastify__progress-bar {
+  height: 4px !important;
+  opacity: 1 !important;
+  animation-duration: 4000ms !important;
+  transition-duration: 4000ms !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  position: absolute !important;
+  width: 100% !important;
+}
+
+.Toastify__progress-bar--success {
+  background-color: #10b981 !important;
+}
+
+.Toastify__progress-bar--error {
+  background-color: #dc2626 !important;
+}
+
+.Toastify__toast-icon {
+  font-size: 1.5rem !important;
+  margin-right: 15px !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.Toastify__toast-body {
+  padding: 0 !important;
+  font-weight: 500 !important;
+  line-height: 1.6 !important;
+  flex: 1 !important;
+}
+
+/* Para que los toasts queden bien en pantallas pequeñas */
+@media (max-width: 768px) {
+  .Toastify__toast-container--top-center {
+    width: 90% !important;
+    max-width: 90% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+}
+
+/* Estilos minimalistas para el formulario de registro */
+.form-container {
+  max-width: 90%; /* Changed from fixed 1200px to 90% of viewport width */
+  width: 600px; /* Added explicit width */
+  margin: 30px auto; /* Reducido de 40px a 30px */
+  padding: 40px; /* Reducido de 50px a 40px */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 15px; /* Reducido de 20px a 15px */
+}
+
+.logo img {
+  height: 60px;
+  width: auto;
+}
+
+h1 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 18px; /* Reducido de 24px a 18px */
+  font-weight: 500;
+  color: #333;
+}
+
+h2 {
+  font-size: 18px;
+  margin-bottom: 15px; /* Reducido de 20px a 15px */
+  font-weight: 500;
+  color: #555;
+}
+
+/* Estilos para el stepper */
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px; /* Reducido de 30px a 20px */
+  position: relative;
+}
+
+.stepper::after {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #eee;
+  z-index: 1;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.step-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 2px solid #ddd;
+  color: #aaa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.step-label {
+  font-size: 12px;
+  color: #999;
+}
+
+.step.active .step-number {
+  background-color: #4a6cf7;
+  border-color: #4a6cf7;
+  color: #fff;
+}
+
+.step.active .step-label {
+  color: #4a6cf7;
+  font-weight: 500;
+}
+
+.step.completed .step-number {
+  background-color: #4a6cf7;
+  border-color: #4a6cf7;
+  color: #fff;
+}
+
+/* Estilos para campos de formulario */
+.form-step {
+  animation: fadeIn 0.3s ease-in-out;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.form-field {
+  margin-bottom: 20px; /* Reducido de 30px a 20px */
+}
+
+.form-row {
+  display: flex;
+  gap: 30px; /* Reducido de 40px a 30px */
+  margin-bottom: 0;
+}
+
+.form-row .form-field {
+  flex: 1;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #555;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px 16px; /* Aumentado el padding interno de los inputs */
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  color: #000000;
+  background-color: #ffffff;
+}
+
+/* Estilo específico para el input de fecha */
+input[type="date"] {
+  cursor: pointer;
+  position: relative;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234a6cf7' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+}
+
+/* Estilo específico para los placeholders */
+input::placeholder {
+  color: rgba(0, 0, 0, 0.6);
+  opacity: 1;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #4a6cf7;
+}
+
+input.error, select.error {
+  border-color: #f44336;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.form-field.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-field.checkbox input {
+  width: auto;
+  margin: 0;
+}
+
+.form-field.checkbox label {
+  margin-bottom: 0;
+  font-size: 13px;
+}
+
+/* Fix para modo oscuro en los navegadores */
+@media (prefers-color-scheme: dark) {
+  .form-container {
+    background-color: #ffffff;
+  }
+  
+  input, select {
+    color: #000000;
+    background-color: #ffffff;
+  }
+  
+  input::placeholder {
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  /* Fix para el icono de fecha en modo oscuro */
+  input[type="date"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23000000' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z'/%3E%3C/svg%3E");
+    background-size: 18px;
+  }
+}
+
+/* Estilos para botones */
+.form-navigation {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-next {
+  min-width: 250px; /* Reducido de 300px a 250px */
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: #4a6cf7;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #3a5ce5;
+}
+
+.btn-secondary {
+  background-color: #f2f4f8;
+  color: #555;
+}
+
+.btn-secondary:hover {
+  background-color: #e6e9ef;
+}
+
+/* Enlaces */
+a {
+  color: #4a6cf7;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.login-link {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+  color: #777;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Removed all dark mode media queries */ 
+
+/* Fix para inputs autocompletados en modo oscuro */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: #000000 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: #000000;
+  background-clip: content-box !important;
+}
+
+.sin-autocompletar {
+  color: red !important;
+  -webkit-text-fill-color: red !important;
+  background-color: white !important;
+}
+
+/* Extend the autoclose time for toasts */
+.Toastify__toast--success, 
+.Toastify__toast--error {
+  animation-duration: 750ms !important;
+  transition-duration: 750ms !important;
+}
+
+/* Hacer que las barras de progreso sean más lentas para que el usuario tenga tiempo de leer */
+.Toastify__progress-bar {
+  animation-duration: 5000ms !important; /* 5 segundos para la barra de progreso */
+}
+
+.Toastify__progress-bar--success {
+  background-color: #10b981 !important;
+  height: 4px !important;
+}
+
+/* Específicos para checkbox error */
+.checkbox-error {
+  border: 2px solid #ff0000 !important;
+  background-color: rgba(255, 0, 0, 0.05);
+}
+
+.checkbox-error input[type="checkbox"] {
+  outline: 2px solid #f44336;
+}
+
+.form-field.checkbox .error-message {
+  display: block;
+  margin-top: 6px;
+  margin-left: 26px;
+  font-weight: 500;
+}
+
+/* Animación para destacar el error del checkbox */
+@keyframes pulse-error {
+  0% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(244, 67, 54, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
+}
+
+.checkbox-error input[type="checkbox"] {
+  animation: pulse-error 1.5s infinite;
+}
+
+/* Animación para sacudir el elemento con error */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake-animation {
+  animation: shake 0.5s linear;
+}
+
+/* Mejoras para el contenedor de checkbox */
+.checkbox-container {
+  padding: 10px;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.checkbox-container.checkbox-error {
+  border: 1px solid #f44336;
+  box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.1);
+}
+
+/* Estilos para el checkbox */
+.terms-checkbox {
+  margin-right: 8px;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.checkbox-input-error {
+  accent-color: #f44336;
+}
+
+.form-field.checkbox {
+  margin-top: 15px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.terms-label {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.required-indicator {
+  color: #f44336;
+  margin-right: 4px;
+}
+
+/* Nueva animación de pulso para el error */
+.pulse-error {
+  animation: pulse-error 1s infinite;
+  box-shadow: 0 0 0 rgba(255, 0, 0, 0.4);
+  border-radius: 5px;
+}
+
+@keyframes pulse-error {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+  }
+}
