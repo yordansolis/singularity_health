@@ -340,6 +340,12 @@ function UserRegistration() {
         onOpen: scrollToTop
       });
       
+      // Redirigir al inicio del formulario después de 3 segundos (tiempo del toast)
+      setTimeout(() => {
+        setCurrentStep(1);
+        scrollToTop();
+      }, 3000);
+      
       // Limpiar formulario
       setFormData({
         username: '',

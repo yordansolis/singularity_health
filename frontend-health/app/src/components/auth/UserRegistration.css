@@ -608,3 +608,204 @@ select:-webkit-autofill {
     box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
   }
 }
+
+/* Mejoras de responsividad para diferentes dispositivos */
+/* Tablets y pantallas medianas */
+@media (max-width: 768px) {
+  .form-container {
+    width: 90%;
+    max-width: 600px;
+    padding: 30px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .btn-next {
+    min-width: 200px;
+  }
+  
+  .logo img {
+    height: 50px;
+  }
+}
+
+/* Dispositivos móviles */
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  
+  .form-container {
+    width: 100%;
+    padding: 20px;
+    margin: 0 auto;
+    border-radius: 6px;
+  }
+  
+  h1 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  h2 {
+    font-size: 16px;
+  }
+  
+  input, select {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+  
+  .form-field {
+    margin-bottom: 15px;
+  }
+  
+  .btn-primary, .btn-secondary {
+    padding: 10px 15px;
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  .btn-next {
+    min-width: unset;
+    width: 100%;
+  }
+  
+  .step-label {
+    font-size: 10px;
+  }
+  
+  .step-number {
+    width: 25px;
+    height: 25px;
+    font-size: 12px;
+  }
+  
+  .stepper::after {
+    top: 12px;
+  }
+  
+  .form-navigation {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* Dispositivos muy pequeños */
+@media (max-width: 320px) {
+  body {
+    padding: 8px;
+  }
+  
+  .form-container {
+    padding: 15px;
+    border-radius: 4px;
+  }
+  
+  .logo img {
+    height: 40px;
+  }
+  
+  h1 {
+    font-size: 18px;
+  }
+  
+  .step-label {
+    display: none;
+  }
+}
+
+/* Orientación landscape en móviles */
+@media (max-height: 500px) and (orientation: landscape) {
+  body {
+    padding: 8px;
+  }
+  
+  .form-container {
+    margin: 0 auto;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .logo {
+    margin-bottom: 10px;
+  }
+  
+  .logo img {
+    height: 40px;
+  }
+  
+  h1 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .form-field {
+    margin-bottom: 10px;
+  }
+}
+
+/* Pantallas grandes y monitores de alta resolución */
+@media (min-width: 1200px) {
+  .form-container {
+    max-width: 800px;
+  }
+}
+
+/* Ajuste para dispositivos con notch o pestañas en pantalla */
+@supports (padding: max(0px)) {
+  .form-container {
+    padding-left: max(40px, env(safe-area-inset-left));
+    padding-right: max(40px, env(safe-area-inset-right));
+  }
+  
+  @media (max-width: 480px) {
+    .form-container {
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+    }
+  }
+}
+
+/* Mejoras para pantallas táctiles */
+@media (hover: none) and (pointer: coarse) {
+  input, select, button {
+    min-height: 44px; /* Tamaño mínimo recomendado para elementos táctiles */
+  }
+  
+  .checkbox-container {
+    padding: 12px;
+  }
+  
+  .terms-checkbox {
+    transform: scale(1.3);
+  }
+}
+
+/* Mejoras para centrado en todos los dispositivos */
+html, body {
+  min-height: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.form-container {
+  position: relative;
+  left: 0;
+  transform: none;
+}
