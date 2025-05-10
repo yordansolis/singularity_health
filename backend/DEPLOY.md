@@ -24,7 +24,7 @@ Crea un archivo `.env` en el directorio `backend/` con el siguiente contenido:
 ```
 SECRET_KEY=tu_clave_secreta_aqui
 DEBUG=False
-ALLOWED_HOSTS=tu_ip_o_dominio
+ALLOWED_HOSTS=tu_ip_o_dominio,localhost,127.0.0.1
 DATABASE_URL=sqlite:///db.sqlite3
 ```
 
@@ -38,6 +38,7 @@ Edita el archivo `backend/nginx_config` y reemplaza `server_name _;` con `server
 
 ```bash
 cd backend
+chmod +x deploy.sh
 ./deploy.sh
 ```
 
@@ -64,7 +65,24 @@ Y acceder a la aplicación en tu navegador usando la IP o dominio de tu VM.
 
 ## Solución de problemas
 
-Si encuentras algún problema durante el despliegue, puedes revisar los logs con:
+### Problema de permisos de Gunicorn
+
+Si encuentras errores relacionados con permisos al iniciar Gunicorn, como:
+
+```
+PermissionError: [Errno 13] Permission denied
+```
+
+Puedes solucionarlo reiniciando el servicio después de la instalación:
+
+```bash
+sudo systemctl restart gunicorn
+sudo systemctl status gunicorn
+```
+
+### Otros problemas comunes
+
+Si encuentras algún otro problema durante el despliegue, puedes revisar los logs con:
 
 ```bash
 # Logs de Gunicorn
@@ -72,6 +90,23 @@ sudo journalctl -u gunicorn
 
 # Logs de Nginx
 sudo tail -f /var/log/nginx/error.log
+```
+
+### Problemas con proxy_params en Nginx
+
+Si Nginx muestra un error relacionado con `proxy_params`, edita el archivo `nginx_config` y reemplaza:
+
+```
+include proxy_params;
+```
+
+Con:
+
+```
+proxy_set_header Host $http_host;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto $scheme;
 ```
 
 ## Actualización de la aplicación

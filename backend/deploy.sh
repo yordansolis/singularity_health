@@ -13,10 +13,6 @@ sudo apt-get upgrade -y
 echo "Instalando dependencias..."
 sudo apt-get install -y python3-pip python3-dev libpq-dev nginx
 
-# Crear directorios para logs y pid
-sudo mkdir -p /var/log/gunicorn
-sudo mkdir -p /var/run/gunicorn
-
 # Configurar entorno virtual
 echo "Configurando entorno virtual..."
 pip3 install virtualenv

@@ -9,15 +9,15 @@ workers = 3
 # The socket to bind
 bind = "0.0.0.0:8000"
 
-# Write access and error info to /var/log
-accesslog = "/var/log/gunicorn/access.log"
-errorlog = "/var/log/gunicorn/error.log"
+# Write access and error info to logs in home directory
+accesslog = "/home/yordansolis2/gunicorn-access.log"
+errorlog = "/home/yordansolis2/gunicorn-error.log"
 
 # Redirect stdout/stderr to log file
 capture_output = True
 
 # PID file so you can easily kill the process
-pidfile = "/var/run/gunicorn/gunicorn.pid"
+pidfile = "/home/yordansolis2/gunicorn.pid"
 
 # Daemonize the Gunicorn process (detach & enter background)
 daemon = False 
