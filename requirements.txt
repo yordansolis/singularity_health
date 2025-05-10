@@ -1,0 +1,4 @@
+graphene-django
+django-cors-headers 
+django-filter 
+bcrypt
