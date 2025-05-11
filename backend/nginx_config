@@ -1,39 +1,77 @@
 server {
     listen 80;
-    server_name 34.29.108.79;  # Ya está configurado con tu IP
-    client_max_body_size 100M;  # Permitir subidas de archivos grandes
+    server_name 34.29.108.79;
+    
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
 
-    location = /favicon.ico { access_log off; log_not_found off; }
-
-    # Servir archivos estáticos directamente
+server {
+    listen 443 ssl;
+    server_name 34.29.108.79;
+    
+    ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
+    ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+    
+    # Configuración básica de SSL
+    ssl_protocols TLSv1.2 TLSv1.3;
+    
+    # Logging detallado para depuración
+    error_log /var/log/nginx/ssl-error.log debug;
+    access_log /var/log/nginx/ssl-access.log;
+    
+    # Configuración específica para GraphQL
+    location /graphql/ {
+        proxy_pass http://unix:/home/yordansolis2/singularity_health/backend/gunicorn.sock;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        
+        # Aumentar timeouts para consultas GraphQL complejas
+        proxy_connect_timeout 300s;
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
+        
+        # Configuración CORS específica para GraphQL
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization' always;
+        add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+        
+        # Manejo de solicitudes preflight OPTIONS
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization';
+            add_header 'Access-Control-Max-Age' 1728000;
+            add_header 'Content-Type' 'text/plain; charset=utf-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+    }
+    
+    # Configuración para el resto de la aplicación
+    location / {
+        proxy_pass http://unix:/home/yordansolis2/singularity_health/backend/gunicorn.sock;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+    }
+    
+    # Configuración para archivos estáticos
     location /static/ {
         alias /home/yordansolis2/singularity_health/backend/staticfiles/;
-        access_log off;
         expires 30d;
         add_header Cache-Control "public, max-age=2592000";
-        include /home/yordansolis2/singularity_health/backend/nginx_cors_config;
-        
-        # Configuración adicional para archivos estáticos
-        gzip on;
-        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
     }
-
-    # Configuración para el panel de administración
-    location /admin/ {
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_pass http://localhost:8000;
-        include /home/yordansolis2/singularity_health/backend/nginx_cors_config;
+    
+    # Favicon
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
     }
-
-    location / {
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_pass http://localhost:8000;
-        include /home/yordansolis2/singularity_health/backend/nginx_cors_config;
-    }
-} 
+}

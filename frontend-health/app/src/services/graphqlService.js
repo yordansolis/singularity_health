@@ -11,13 +11,15 @@ export const executeGraphQL = async (query, variables) => {
     console.log('Enviando consulta GraphQL:', query);
     console.log('Con variables:', variables);
     
-    const response = await fetch('http://127.0.0.1:7007/graphql/', {
+    
+    // const response = await fetch('http://127.0.0.1:7007/graphql/', {
+      const response = await fetch('http://34.29.108.79/graphql/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      credentials: 'same-origin',
+      // credentials: 'same-origin',
       body: JSON.stringify({
         query,
         variables,

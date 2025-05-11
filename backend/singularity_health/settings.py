@@ -30,7 +30,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-s#x+$tcq(e^n19c!&k%r*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = False
+
+# Asegurarse de que la IP del servidor esté permitida
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '34.29.108.79']
+
+
 
 
 # Application definition
@@ -46,6 +52,10 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
 ]
+# Configuración de seguridad para HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = False  # No redireccionar en Django (Nginx lo hará)
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -73,6 +83,8 @@ CORS_ALLOW_ALL_ORIGINS = True  # Solo para desarrollo, en producción especifica
 # Configuración adicional para CORS
 CORS_ALLOW_CREDENTIALS = True
 
+
+
 # 5. Especificar qué headers permitir
 CORS_ALLOW_HEADERS = [
     'accept',
@@ -86,6 +98,10 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 # 6. Permitir métodos HTTP
+
+
+
+# 6. Permitir métodos HTTP
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -94,7 +110,7 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
-
+SECURE_SSL_REDIRECT = True
 GRAPHENE = {
     'SCHEMA': 'singularity_health.schema.schema'
 }
@@ -104,12 +120,6 @@ AUTH_USER_MODEL = 'users.User'
 
 
 #  documentación final  ######## ##########
-
-
-
-
-ROOT_URLCONF = 'singularity_health.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -170,11 +180,14 @@ USE_I18N = True
 USE_TZ = True
 
 
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = '/home/yordansolis2/singularity_health/backend/staticfiles/'
 
 # Directorios adicionales donde buscar archivos estáticos
 STATICFILES_DIRS = [
@@ -191,3 +204,4 @@ STATICFILES_FINDERS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
