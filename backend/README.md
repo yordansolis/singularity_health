@@ -177,3 +177,28 @@ query {
 - Todas las contraseñas son almacenadas mediante hash utilizando las funciones de seguridad de Django.
 - La API incluye validaciones completas para evitar datos incorrectos o duplicados.
 - El frontend incluye validación en tiempo real para mejorar la experiencia de usuario.
+
+######
+
+sudo apt install -y python3 python3-pip python3-venv
+sudo apt install nginx -y
+sudo apt install git -y
+
+git clone …http repor
+pip3 install -r requirements.txt
+pip3 install gunicorn
+
+cd nombre-del-repo
+
+nano settings.py
+
+ALLOWED_HOSTS = ['your.server.ip.address', 'yourdomain.com', 'localhost']
+[Unit]
+
+sudo nano /etc/systemd/system/gunicorn.service
+Description=gunicorn daemon for Django app
+After=network.target
+
+[Service]
+User=parth_nangroo
+Group=www-data
