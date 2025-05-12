@@ -5,3 +5,15 @@ bcrypt
 gunicorn
 django>=5.2
 python-dotenv
+mysqlclient
+# Dependencias para AWS Lambda
+boto3>=1.26.0
+zappa>=0.56.0
+aws-wsgi>=0.2.7
+# Dependencias para testing y CI
+pytest>=7.0.0
+pytest-django>=4.5.2
+flake8>=6.0.0
+pytest-cov>=4.1.0
+# Monitoreo y manejo de errores
+sentry-sdk>=1.25.0

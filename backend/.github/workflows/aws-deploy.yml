@@ -1,0 +1,369 @@
+name: AWS Lambda CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - "backend/**"
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - "backend/**"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+env:
+  AWS_REGION: us-east-1
+  PYTHON_VERSION: 3.9
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: rootpw
+          MYSQL_DATABASE: users_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-django coverage flake8
+
+      - name: Lint with flake8
+        run: |
+          cd backend
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings
+          flake8 . --count --exit-zero --max-complexity=10 --statistics
+
+      - name: Setup test database
+        working-directory: backend
+        env:
+          DB_NAME: users_test
+          DB_USER: root
+          DB_PASSWORD: rootpw
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DJANGO_SETTINGS_MODULE: singularity_health.settings.test
+        run: |
+          python manage.py migrate
+
+      - name: Run tests
+        working-directory: backend
+        env:
+          DB_NAME: users_test
+          DB_USER: root
+          DB_PASSWORD: rootpw
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DJANGO_SETTINGS_MODULE: singularity_health.settings.test
+        run: |
+          pytest --cov=./ --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./backend/coverage.xml
+          flags: unittests
+          fail_ci_if_error: true
+
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all history for tags
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+
+      - name: Generate version
+        id: version
+        run: |
+          VERSION=$(date +%Y%m%d%H%M%S)
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Version: ${VERSION}"
+
+      - name: Install dependencies
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install zappa
+
+      - name: Create deployment package
+        working-directory: backend
+        run: |
+          mkdir -p dist/
+          zip -r dist/lambda-package-${{ steps.version.outputs.version }}.zip . -x "*.git*" -x "*__pycache__*" -x "*.pytest_cache*" -x "*.venv*" -x "*.DS_Store*"
+
+      - name: Upload deployment package
+        uses: actions/upload-artifact@v3
+        with:
+          name: lambda-package
+          path: backend/dist/lambda-package-${{ steps.version.outputs.version }}.zip
+          retention-days: 1
+
+  deploy-dev:
+    name: Deploy to Dev
+    needs: [test, build]
+    if: github.ref == 'refs/heads/develop' || github.event.inputs.environment == 'dev'
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+
+      - name: Download deployment package
+        uses: actions/download-artifact@v3
+        with:
+          name: lambda-package
+          path: backend/dist
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy with Zappa
+        working-directory: backend
+        run: |
+          pip install zappa
+          zappa update dev || zappa deploy dev
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Run post-deployment tests
+        working-directory: backend
+        run: |
+          # Wait for API to be available
+          sleep 30
+          # Perform health check
+          curl -s -o /dev/null -w "%{http_code}" "https://dev-api.example.com/healthcheck" | grep -q "200" && echo "Health check passed" || (echo "Health check failed" && exit 1)
+
+      - name: Send deployment notification
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": ":rocket: Successfully deployed to DEV environment\nVersion: ${{ needs.build.outputs.package_version }}\nCommit: ${{ github.sha }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: [test, build, deploy-dev]
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+
+      - name: Download deployment package
+        uses: actions/download-artifact@v3
+        with:
+          name: lambda-package
+          path: backend/dist
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy with Zappa
+        working-directory: backend
+        run: |
+          pip install zappa
+          zappa update staging || zappa deploy staging
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Run post-deployment tests
+        working-directory: backend
+        run: |
+          # Wait for API to be available
+          sleep 30
+          # Perform health check
+          curl -s -o /dev/null -w "%{http_code}" "https://staging-api.example.com/healthcheck" | grep -q "200" && echo "Health check passed" || (echo "Health check failed" && exit 1)
+
+      - name: Send deployment notification
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": ":rocket: Successfully deployed to STAGING environment\nVersion: ${{ needs.build.outputs.package_version }}\nCommit: ${{ github.sha }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  deploy-prod:
+    name: Deploy to Production
+    needs: [test, build, deploy-staging]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'prod'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+
+      - name: Download deployment package
+        uses: actions/download-artifact@v3
+        with:
+          name: lambda-package
+          path: backend/dist
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy with Zappa
+        working-directory: backend
+        run: |
+          pip install zappa
+          zappa update prod || zappa deploy prod
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Run post-deployment tests
+        working-directory: backend
+        run: |
+          # Wait for API to be available
+          sleep 30
+          # Perform health check
+          curl -s -o /dev/null -w "%{http_code}" "https://api.example.com/healthcheck" | grep -q "200" && echo "Health check passed" || (echo "Health check failed" && exit 1)
+
+      - name: Send deployment notification
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": ":rocket: Successfully deployed to PRODUCTION environment\nVersion: ${{ needs.build.outputs.package_version }}\nCommit: ${{ github.sha }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  rollback:
+    name: Rollback Failed Deployment
+    needs: [deploy-dev, deploy-staging, deploy-prod]
+    if: failure()
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/develop' && 'development') || (github.ref == 'refs/heads/main' && 'staging') }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Rollback with Zappa
+        working-directory: backend
+        run: |
+          pip install zappa
+          if [[ "${{ github.ref }}" == "refs/heads/develop" || "${{ github.event.inputs.environment }}" == "dev" ]]; then
+            zappa rollback dev -n 1
+          elif [[ "${{ github.ref }}" == "refs/heads/main" || "${{ github.event.inputs.environment }}" == "staging" ]]; then
+            zappa rollback staging -n 1
+          elif [[ "${{ github.event.inputs.environment }}" == "prod" ]]; then
+            zappa rollback prod -n 1
+          fi
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Send rollback notification
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": ":warning: Deployment failed and has been rolled back\nEnvironment: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/develop' && 'DEV') || (github.ref == 'refs/heads/main' && 'STAGING') || 'PROD' }}\nCommit: ${{ github.sha }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -15,7 +15,7 @@ import os
 from dotenv import load_dotenv
 
 # Cargar variables de entorno
-load_dotenv()
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env.dev'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,13 +28,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-s#x+$tcq(e^n19c!&k%r*+x87uw=qx_21xonb3&=0p7-#(g!9j')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = False
 
 # Asegurarse de que la IP del servidor esté permitida
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '34.29.108.79']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '34.29.108.79', '*']
 
 
 
@@ -52,6 +52,10 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
 ]
+
+# Configuración de URL principal
+ROOT_URLCONF = 'singularity_health.urls'
+
 # Configuración de seguridad para HTTPS
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = False  # No redireccionar en Django (Nginx lo hará)
@@ -110,7 +114,10 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
-SECURE_SSL_REDIRECT = True
+
+# Para desarrollo, deshabilitamos la redirección SSL
+SECURE_SSL_REDIRECT = False
+
 GRAPHENE = {
     'SCHEMA': 'singularity_health.schema.schema'
 }
@@ -140,13 +147,21 @@ WSGI_APPLICATION = 'singularity_health.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('DB_NAME', 'users'),
+        'USER': os.environ.get('DB_USER', 'root'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'Root123#4'),
+        'HOST': os.environ.get('DB_HOST', 'db-users.c0p4qigkiy8m.us-east-1.rds.amazonaws.com'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     }
 }
+
+
 
 
 # Password validation
@@ -186,8 +201,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATIC_ROOT = '/home/yordansolis2/singularity_health/backend/staticfiles/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Directorios adicionales donde buscar archivos estáticos
 STATICFILES_DIRS = [
