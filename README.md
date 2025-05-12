@@ -182,3 +182,35 @@ Este proyecto es de código abierto y está disponible bajo la Licencia MIT.
 ## Autor
 
 Desarrollado como prueba técnica para Singularity Health.
+
+## Capturas de Pantalla
+
+A continuación se muestran algunas capturas de pantalla del sistema:
+
+### Formulario de Registro
+
+![Formulario de Registro](images/formulario.png)
+
+### Validación de Datos
+
+![Validación de Datos](images/validacion.png)
+
+### Información de Contacto
+
+![Información de Contacto](images/contacto.png)
+
+### Registro Exitoso
+
+![Registro Exitoso](images/exito.png)
+
+### Panel de Administración
+
+![Panel de Administración](images/admin.png)
+
+### Interfaz de GraphQL
+
+![Interfaz de GraphQL](images/graphql.png)
+
+### Deploy
+
+![Consulta de Usuarios](images/consulta.png)
