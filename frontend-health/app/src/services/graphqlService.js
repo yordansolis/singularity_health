@@ -13,7 +13,7 @@ export const executeGraphQL = async (query, variables) => {
     
     
     // const response = await fetch('http://127.0.0.1:7007/graphql/', {
-      const response = await fetch('https://34.29.108.79/graphql/', {
+      const response = await fetch('https://1afs3bt7ti.execute-api.us-east-1.amazonaws.com/graphql/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

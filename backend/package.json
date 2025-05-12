@@ -1,0 +1,18 @@
+{
+  "name": "singularity-health-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Singularity Health",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "sls deploy",
+    "deploy:prod": "sls deploy --stage prod",
+    "remove": "sls remove",
+    "logs": "sls logs -f api -t"
+  },
+  "devDependencies": {
+    "serverless": "^3.33.0",
+    "serverless-python-requirements": "^6.0.0",
+    "serverless-wsgi": "^3.0.2",
+    "serverless-s3-sync": "^3.1.0"
+  }
+} 
