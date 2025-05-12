@@ -1,5 +1,10 @@
 # Singularity Health - Sistema de Registro de Usuarios
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-Completed-brightgreen?style=for-the-badge" alt="Status: Completed" />
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License: MIT" />
+</p>
+
 ## Descripción del Proyecto
 
 Este proyecto es una solución a la prueba técnica para Desarrollador Backend en Singularity Health, que consiste en un sistema completo de registro de usuarios con validación de datos y persistencia usando GraphQL. El sistema está compuesto por un backend desarrollado con Django y GraphQL, y un frontend desarrollado con React.
@@ -16,12 +21,26 @@ Este proyecto es una solución a la prueba técnica para Desarrollador Backend e
 
 ### Backend
 
+<p align="left">
+  <img src="https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django" />
+  <img src="https://img.shields.io/badge/GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white" alt="GraphQL" />
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white" alt="AWS" />
+</p>
+
 - Django
 - Graphene-Django (GraphQL)
 - Django CORS Headers
 - BCrypt (para encriptación de contraseñas)
+- AWS
 
 ### Frontend
+
+<p align="left">
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white" alt="Bootstrap" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+</p>
 
 - React
 - Bootstrap
@@ -30,13 +49,39 @@ Este proyecto es una solución a la prueba técnica para Desarrollador Backend e
 
 ### Base de datos
 
+<p align="left">
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
+  <img src="https://img.shields.io/badge/Amazon%20RDS-527FFF?style=for-the-badge&logo=amazon-rds&logoColor=white" alt="Amazon RDS" />
+  <img src="https://img.shields.io/badge/Amazon%20Aurora-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white" alt="Amazon Aurora" />
+</p>
+
 - MySQL - AWS aurora and RDS
 
-### Deploy de base de datos frontend
+### Despliegue
 
-- Cloudflare page CI/CD
+<p align="left">
+  <img src="https://img.shields.io/badge/Cloudflare%20Pages-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare Pages" />
+  <img src="https://img.shields.io/badge/CI/CD-2088FF?style=for-the-badge&logo=github-actions&logoColor=white" alt="CI/CD" />
+</p>
+
+- Cloudflare Pages CI/CD
+
+## Enlaces del Proyecto
+
+| Recurso                   | URL                                                                                 | Descripción                                  |
+| ------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------- |
+| 🌐 **Aplicación Web**     | [Singularity Health App](https://singularity-health.pages.dev/)                     | Formulario de registro para usuarios finales |
+| 🔍 **API GraphQL**        | [Endpoint GraphQL](https://1afs3bt7ti.execute-api.us-east-1.amazonaws.com/graphql/) | Endpoint para consultar y enviar datos       |
+| 🛠️ **GraphQL Playground** | [Hygraph](https://hygraph.com/graphql-playground)                                   | Herramienta para probar consultas GraphQL    |
 
 ## Requisitos Previos
+
+<p align="left">
+  <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.8+" />
+  <img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js 18+" />
+  <img src="https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white" alt="npm" />
+  <img src="https://img.shields.io/badge/yarn-2C8EBB?style=for-the-badge&logo=yarn&logoColor=white" alt="yarn" />
+</p>
 
 - Python 3.8+
 - Node.js 18+
@@ -96,26 +141,52 @@ Este proyecto es una solución a la prueba técnica para Desarrollador Backend e
 
 ### Backend
 
-- **users/**: Aplicación principal con los modelos y esquema GraphQL
-  - **models.py**: Define los modelos de Usuario, Documento de Identidad y Contacto
-  - **schema.py**: Define los tipos GraphQL y mutaciones
-- **singularity_health/**: Configuración del proyecto Django
-  - **settings.py**: Configuración del proyecto
-  - **urls.py**: Rutas del proyecto
-  - **schema.py**: Esquema GraphQL principal
+<details>
+<summary>📁 Estructura de archivos</summary>
+
+```
+users/                  # Aplicación principal
+├── models.py           # Modelos de datos (Usuario, Documento, Contacto)
+├── schema.py           # Definición de tipos y mutaciones GraphQL
+└── ...
+
+singularity_health/     # Configuración del proyecto
+├── settings.py         # Configuración general
+├── urls.py             # Rutas URL
+├── schema.py           # Esquema GraphQL principal
+└── ...
+```
+
+</details>
 
 ### Frontend
 
-- **src/components/auth/**: Componentes de autenticación
-  - **UserRegistration.jsx**: Formulario de registro de usuarios
-- **src/services/**: Servicios para comunicación con el backend
-  - **graphqlService.js**: Servicio para realizar peticiones GraphQL
+<details>
+<summary>📁 Estructura de archivos</summary>
+
+```
+src/
+├── components/
+│   └── auth/
+│       └── UserRegistration.jsx  # Formulario de registro
+├── services/
+│   └── graphqlService.js         # Cliente GraphQL
+└── ...
+```
+
+</details>
 
 ## Uso del Sistema
 
-### API GraphQL
+### API GraphQL 🚀
 
-La API GraphQL está disponible en http://127.0.0.1:7007/graphql/ y proporciona una interfaz gráfica para realizar consultas y mutaciones.
+La API GraphQL está disponible en:
+
+- Local: http://127.0.0.1:7007/graphql/
+- Producción: https://1afs3bt7ti.execute-api.us-east-1.amazonaws.com/graphql/
+
+<details>
+<summary>📝 Ejemplos de consultas</summary>
 
 #### Crear un Usuario
 
@@ -160,23 +231,30 @@ query {
 }
 ```
 
-### Interfaz de Usuario
+</details>
+
+### Interfaz de Usuario 💻
 
 La aplicación frontend proporciona un formulario de registro intuitivo con validaciones en tiempo real. El formulario está dividido en secciones para facilitar la entrada de datos:
 
-1. **Información Personal**: Nombre de usuario, correo electrónico, contraseña, nombre y apellido
-2. **Documento de Identidad**: Tipo de documento, número y fecha de expedición
-3. **Información de Contacto**: Teléfono, dirección, ciudad y país
+1. **📋 Información Personal**: Nombre de usuario, correo electrónico, contraseña, nombre y apellido
+2. **🪪 Documento de Identidad**: Tipo de documento, número y fecha de expedición
+3. **📞 Información de Contacto**: Teléfono, dirección, ciudad y país
 
-## Validaciones Implementadas
+## Validaciones Implementadas ✅
 
-- **Email**: Formato válido y unicidad
-- **Nombre de usuario**: Mínimo 4 caracteres y unicidad
-- **Contraseña**: Mínimo 8 caracteres, al menos una mayúscula, una minúscula y un número
-- **Documento**: Unicidad de la combinación tipo y número
-- **Teléfono**: Formato válido
+- **📧 Email**: Formato válido y unicidad
+- **👤 Nombre de usuario**: Mínimo 4 caracteres y unicidad
+- **🔑 Contraseña**: Mínimo 8 caracteres, al menos una mayúscula, una minúscula y un número
+- **🪪 Documento**: Unicidad de la combinación tipo y número
+- **📞 Teléfono**: Formato válido
 
-## Seguridad
+## Seguridad 🔐
+
+<p align="left">
+  <img src="https://img.shields.io/badge/Encriptación-BCrypt-blue?style=for-the-badge" alt="BCrypt" />
+  <img src="https://img.shields.io/badge/Protección-CSRF-red?style=for-the-badge" alt="CSRF" />
+</p>
 
 - Contraseñas encriptadas con BCrypt
 - Validaciones en backend y frontend
@@ -184,9 +262,17 @@ La aplicación frontend proporciona un formulario de registro intuitivo con vali
 
 ## Licencia
 
+<p align="left">
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License: MIT" />
+</p>
+
 Este proyecto es de código abierto y está disponible bajo la Licencia MIT.
 
 ## Autor
+
+<p align="left">
+  <img src="https://img.shields.io/badge/Desarrollado%20para-Singularity%20Health-FF6B6B?style=for-the-badge" alt="Singularity Health" />
+</p>
 
 Desarrollado como prueba técnica para Singularity Health.
 
