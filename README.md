@@ -18,7 +18,6 @@ Este proyecto es una solución a la prueba técnica para Desarrollador Backend e
 
 - Django
 - Graphene-Django (GraphQL)
-- SQLite (base de datos)
 - Django CORS Headers
 - BCrypt (para encriptación de contraseñas)
 
@@ -28,6 +27,14 @@ Este proyecto es una solución a la prueba técnica para Desarrollador Backend e
 - Bootstrap
 - React-Toastify (notificaciones)
 - Vite (bundler)
+
+### Base de datos
+
+- MySQL - AWS aurora and RDS
+
+### Deploy de base de datos frontend
+
+- Cloudflare page CI/CD
 
 ## Requisitos Previos
 
