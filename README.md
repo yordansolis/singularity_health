@@ -71,7 +71,7 @@ Este proyecto es una solución a la prueba técnica para Desarrollador Backend e
 | Recurso                   | URL                                                                                 | Descripción                                  |
 | ------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------- |
 | 🌐 **Aplicación Web**     | [Singularity Health App](https://singularity-health.pages.dev/)                     | Formulario de registro para usuarios finales |
-| 🔍 **API GraphQL**        | [Endpoint GraphQL](https://1afs3bt7ti.execute-api.us-east-1.amazonaws.com/graphql/) | Endpoint para consultar y enviar datos       |
+| 🔍 **API GraphQL**        | [Endpoint GraphQL](https://1afs3bt7ti.execute-api.us-east-1.amazonaws.com/graphql/) | Endpoint para consultar y enviar datos (Sin servicio para vitar costos)       |
 | 🛠️ **GraphQL Playground** | [Hygraph](https://hygraph.com/graphql-playground)                                   | Herramienta para probar consultas GraphQL    |
 
 ## Requisitos Previos
